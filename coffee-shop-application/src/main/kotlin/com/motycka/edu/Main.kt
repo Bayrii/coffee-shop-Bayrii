@@ -18,12 +18,20 @@ object MenuItemTable : LongIdTable("menu_item") {
 }
 
 object OrderTable : LongIdTable("menu_item") {
-    val customerName = text("customer_name")
-    val orderDate = datetime("order_date")
-    val totalAmount = double("total_amount")
-}
+    object OrderTable : LongIdTable("orders") {
+        val customerName = text("customer_name")
+        val orderDate = datetime("order_date")
+        val totalAmount = double("total_amount")
+    }
 
-object OrderItemTable : Table("order_item") {
-    val menuItemId = long("id").references(MenuItemTable.id)
-    val orderId = long("order_id").references(OrderTable.id)
+    object OrderItemTable : Table("order_item") {
+        val menuItemId = long("id").references(MenuItemTable.id)
+        val orderId = long("order_id").references(OrderTable.id)
+
+        object OrderItemTable : LongIdTable("order_item") {
+            val menuItemId = reference("menu_item_id", MenuItemTable.id)
+            val orderId = reference("order_id", OrderTable.id)
+            val quantity = integer("quantity")
+        }
+    }
 }
